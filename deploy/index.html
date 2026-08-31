@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>张三 · 个人简历</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html { scroll-behavior:smooth; }
+  body { font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif; background:#f1f5f9; color:#1e293b; min-height:100vh; }
+
+  /* ===== 顶部 ===== */
+  header { padding:56px 24px 32px; text-align:center; }
+  .avatar { width:96px; height:96px; margin:0 auto; border-radius:50%; background:linear-gradient(135deg,#6366f1,#9333ea); color:#fff; font-size:38px; font-weight:700; display:flex; align-items:center; justify-content:center; box-shadow:0 10px 25px rgba(99,102,241,.35); user-select:none; }
+  h1 { margin-top:16px; font-size:32px; font-weight:800; }
+  .slogan { margin-top:8px; color:#64748b; font-size:17px; }
+  .quick-info { margin-top:14px; display:flex; flex-wrap:wrap; justify-content:center; gap:8px; }
+  .quick-info span { font-size:13px; color:#475569; background:#fff; border-radius:999px; padding:4px 12px; box-shadow:0 1px 3px rgba(0,0,0,.06); }
+
+  /* ===== 通用 ===== */
+  main { max-width:1152px; margin:0 auto; padding:0 24px 48px; }
+  section { margin-top:40px; }
+  .sec-title { display:flex; align-items:center; gap:10px; font-size:22px; font-weight:800; margin-bottom:18px; }
+  .sec-title .bar { width:6px; height:24px; border-radius:3px; background:linear-gradient(180deg,#6366f1,#9333ea); }
+  .sec-title .sub { font-size:13px; color:#94a3b8; font-weight:400; }
+
+  /* ===== 经历区：4 列规整网格（桌面 4 / 平板 3 / 手机 2）===== */
+  .grid4 { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
+  @media (max-width:1023px){ .grid4 { grid-template-columns:repeat(3,1fr); } }
+  @media (max-width:767px) { .grid4 { grid-template-columns:repeat(2,1fr); } }
+  .grid4 .item { margin-bottom:0; min-width:0; }
+  .grid4 .card { height:100%; min-width:0; }
+  .grid4 .card-top { flex-wrap:wrap; }
+  .grid4 .date { white-space:normal; word-break:break-all; }
+
+  /* ===== 瀑布流 ===== */
+  .masonry { column-count:4; column-gap:20px; }
+  @media (max-width:1023px){ .masonry { column-count:3; } }
+  @media (max-width:767px) { .masonry { column-count:2; } }
+  .item { break-inside:avoid; display:inline-block; width:100%; margin-bottom:20px; opacity:0; transform:translateY(20px); transition:opacity .6s ease, transform .6s ease; }
+  .item.show { opacity:1; transform:translateY(0); }
+  .card { background:#fff; border-radius:16px; padding:20px; box-shadow:0 1px 3px rgba(0,0,0,.06); cursor:pointer; transition:transform .3s ease, box-shadow .3s ease; }
+  .card:hover { transform:scale(1.03) translateY(-3px); box-shadow:0 18px 36px -12px rgba(0,0,0,.22); }
+  .card-top { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+  .badge { padding:2px 10px; border-radius:6px; font-size:12px; font-weight:600; }
+  .badge.工作 { background:#d1fae5; color:#059669; }
+  .badge.项目 { background:#e0f2fe; color:#0284c7; }
+  .badge.教育 { background:#f3e8ff; color:#9333ea; }
+  .badge.兼职 { background:#fef3c7; color:#b45309; }
+  .date { font-size:12px; color:#94a3b8; white-space:nowrap; }
+  .card h3 { margin-top:8px; font-size:17px; font-weight:700; line-height:1.35; }
+  .org { font-size:13px; color:#64748b; margin-top:2px; }
+  .desc { margin-top:10px; font-size:13.5px; color:#475569; line-height:1.7; }
+  .tags { margin-top:12px; display:flex; flex-wrap:wrap; gap:6px; }
+  .tags span { padding:2px 8px; border-radius:4px; background:#eef2ff; color:#4f46e5; font-size:12px; }
+
+  /* ===== 技能 ===== */
+  .skill-groups { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
+  @media (max-width:767px){ .skill-groups { grid-template-columns:1fr; } }
+  .skill-group { background:#fff; border-radius:16px; padding:18px 20px; box-shadow:0 1px 3px rgba(0,0,0,.06); }
+  .skill-group h4 { font-size:15px; font-weight:700; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+  .skill-group h4::before { content:""; width:8px; height:8px; border-radius:50%; background:#6366f1; }
+  .skill-group .tags span { background:#f1f5f9; color:#475569; padding:3px 10px; }
+
+  /* ===== 荣誉 ===== */
+  .honor-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
+  @media (max-width:767px){ .honor-grid { grid-template-columns:1fr; } }
+  .honor { background:#fff; border-radius:16px; padding:16px 20px; box-shadow:0 1px 3px rgba(0,0,0,.06); display:flex; gap:14px; align-items:flex-start; }
+  .honor .trophy { flex:0 0 40px; height:40px; border-radius:10px; background:linear-gradient(135deg,#fbbf24,#f59e0b); color:#fff; display:flex; align-items:center; justify-content:center; font-size:20px; }
+  .honor h4 { font-size:15px; font-weight:700; }
+  .honor .meta { font-size:12.5px; color:#94a3b8; margin-top:2px; }
+
+  /* ===== 作品 ===== */
+  .work-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  @media (max-width:1023px){ .work-grid { grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:767px) { .work-grid { grid-template-columns:1fr; } }
+  .work { background:#fff; border-radius:16px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.06); cursor:pointer; transition:transform .3s ease, box-shadow .3s ease; }
+  .work:hover { transform:translateY(-4px); box-shadow:0 18px 36px -12px rgba(0,0,0,.22); }
+  .work .thumb { height:140px; display:flex; align-items:center; justify-content:center; font-size:44px; color:rgba(255,255,255,.9); font-weight:800; }
+  .work .body { padding:14px 16px; }
+  .work .body h4 { font-size:15px; font-weight:700; }
+  .work .body p { font-size:12.5px; color:#64748b; margin-top:4px; line-height:1.6; }
+
+  /* ===== 底部 ===== */
+  footer { padding:40px 24px; border-top:1px solid #e2e8f0; background:rgba(255,255,255,.6); text-align:center; }
+  .socials { display:flex; flex-wrap:wrap; justify-content:center; gap:20px; }
+  .socials a { display:flex; align-items:center; gap:8px; padding:8px 16px; border-radius:999px; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.06); color:#475569; text-decoration:none; font-size:14px; transition:transform .2s ease, box-shadow .2s ease; }
+  .socials a:hover { transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.12); }
+  .socials svg { width:18px; height:18px; fill:#64748b; }
+  footer p.cr { margin-top:24px; font-size:13px; color:#94a3b8; }
+
+  /* ===== Toast ===== */
+  #toast { position:fixed; left:50%; bottom:32px; max-width:28rem; padding:12px 20px; border-radius:12px; background:rgba(15,23,42,.92); color:#fff; font-size:14px; box-shadow:0 10px 30px rgba(0,0,0,.25); transition:opacity .3s ease, transform .3s ease; opacity:0; transform:translate(-50%,16px); pointer-events:none; z-index:50; }
+  #toast.show { opacity:1; transform:translate(-50%,0); }
+</style>
+</head>
+<body>
+
+  <header>
+    <div class="avatar">张</div>
+    <h1 id="name"></h1>
+    <p class="slogan" id="slogan"></p>
+    <div class="quick-info" id="quick"></div>
+    <div class="skills" id="skills" style="margin-top:16px"></div>
+  </header>
+
+  <main>
+    <!-- 技能 -->
+    <section id="sec-skills">
+      <h2 class="sec-title"><span class="bar"></span>技能 <span class="sub">Skill</span></h2>
+      <div class="skill-groups" id="skillGroups"></div>
+    </section>
+
+    <!-- 工作经历 -->
+    <section id="sec-work">
+      <h2 class="sec-title"><span class="bar"></span>工作经历 <span class="sub">Experience</span></h2>
+      <div class="grid4" id="workMasonry"></div>
+    </section>
+
+    <!-- 项目经历 -->
+    <section id="sec-project">
+      <h2 class="sec-title"><span class="bar"></span>项目经历 <span class="sub">Project</span></h2>
+      <div class="grid4" id="projMasonry"></div>
+    </section>
+
+    <!-- 教育经历 -->
+    <section id="sec-edu">
+      <h2 class="sec-title"><span class="bar"></span>教育经历 <span class="sub">Education</span></h2>
+      <div class="grid4" id="eduMasonry"></div>
+    </section>
+
+    <!-- 荣誉证书 -->
+    <section id="sec-honor">
+      <h2 class="sec-title"><span class="bar"></span>荣誉证书 <span class="sub">Honors</span></h2>
+      <div class="honor-grid" id="honorGrid"></div>
+    </section>
+
+    <!-- 作品展示 -->
+    <section id="sec-work2">
+      <h2 class="sec-title"><span class="bar"></span>作品展示 <span class="sub">Portfolio</span></h2>
+      <div class="work-grid" id="workGrid"></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="socials" id="socials"></div>
+    <p class="cr">© 2026 张三 · 简历瀑布流</p>
+  </footer>
+
+  <div id="toast"></div>
+
+<script>
+/* ============ 数据（全部内联，零外部依赖）============ */
+const profile = {
+  name: "张三",
+  slogan: "AI 工程师 · 专注机器学习与大模型应用",
+  quick: ["本科 · 计算机科学与技术", "AI 工程师", "广州"],
+  skills: ["Python", "PyTorch", "机器学习", "深度学习", "大模型", "Agent"],
+  socials: [
+    { icon:"gh",   label:"GitHub", url:"https://github.com/zhangsan" },
+    { icon:"jj",   label:"掘金",   url:"https://juejin.cn/user/123" },
+    { icon:"mail", label:"邮箱",   url:"mailto:zhangsan@example.com" },
+  ],
+};
+const icons = {
+  gh:'<svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>',
+  jj:'<svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 2.5c.6 0 1 .4 1 1 0 .6-.4 1-1 1-.6 0-1-.4-1-1 0-.6.4-1 1-1zM8.2 7h7.6c.4 0 .7.3.7.7v6.6c0 .4-.3.7-.7.7H8.2c-.4 0-.7-.3-.7-.7V7.7c0-.4.3-.7.7-.7zm.9 1.6v1.8h2.6V8.6H9.1zm3.7 0v1.8h2.6V8.6h-2.6zm-3.7 2.8v1.8h2.6v-1.8H9.1zm3.7 0v1.8h2.6v-1.8h-2.6zM12 19.5c-1.5 0-2.7-.9-3.2-2.1h6.4c-.5 1.2-1.7 2.1-3.2 2.1z"/></svg>',
+  mail:'<svg viewBox="0 0 24 24"><path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>',
+};
+
+const skillGroups = [
+  { name:"机器学习", items:["线性回归","逻辑回归","决策树","随机森林","聚类","朴素贝叶斯","特征工程"] },
+  { name:"深度学习", items:["PyTorch","神经网络","RNN/LSTM/GRU","Transformer","BERT","word2vec"] },
+  { name:"大模型", items:["LLM 微调","LoRA","DPO","RAG","Prompt 工程","Agent","Function Calling","MCP"] },
+  { name:"编程与工程", items:["Python","NumPy","pandas","SQL","Git","Docker","Linux","FastAPI"] },
+];
+
+const workExp = [
+  { type:"工作", title:"AI 工程师", org:"某某科技 · 广州", date:"2023.07 - 至今",
+    tags:["大模型","Agent","RAG"], desc:"负责大模型应用落地，基于开源 LLM 实现企业知识库问答（RAG）与智能 Agent 工作流；通过 LoRA 微调提升领域准确率，覆盖 3 万+ 用户。" },
+  { type:"工作", title:"机器学习工程师", org:"某某数据科技", date:"2022.07 - 2023.06",
+    tags:["PyTorch","NLP","Fine-tuning"], desc:"参与文本分类与信息抽取模型的训练与调优，搭建数据清洗与特征工程流水线，模型 F1 提升 8%，并负责模型上线与线上监控。" },
+  { type:"兼职", title:"算法实习生", org:"某某 AI 实验室", date:"2021.06 - 2022.06",
+    tags:["Python","机器学习","数据分析"], desc:"协助完成数据挖掘与论文复现（朴素贝叶斯、聚类等经典算法），产出分析报告 10+ 份，支撑实验与课程项目。" },
+];
+
+const projects = [
+  { type:"项目", title:"LLaMA2 大语言模型从零构建与微调", org:"个人项目 · 开源", date:"2024.06 - 至今",
+    tags:["PyTorch","DDP","LoRA","DPO"], desc:"从零实现 Tokenizer 训练、DDP 分布式预训练、SFT 全量微调与 LoRA 微调、DPO 偏好对齐，掌握 RoPE 旋转位置编码与梯度裁剪，完整复现大模型训练全流程。" },
+  { type:"项目", title:"基于 Transformer 的古诗词生成系统", org:"个人项目", date:"2024.03 - 2024.05",
+    tags:["Transformer","PyTorch","NLP"], desc:"从零实现多头注意力、位置编码、编码器/解码器与掩码机制，用 3 万首古诗训练诗词生成模型；先以 LSTM 实现，后升级为 Transformer 结构。" },
+  { type:"项目", title:"基于 Agent 的智能客服工作流", org:"某某科技 · 公司项目", date:"2024.08 - 至今",
+    tags:["Agent","ReAct","MCP","FastAPI"], desc:"基于 ReAct 结构实现多工具调用 Agent，结合 Function Calling 完成天气、订单查询等任务；编写 MCP Server/Client 实现与大模型的标准协议交互。" },
+  { type:"项目", title:"语音识别系统", org:"课程实战", date:"2024.05 - 2024.06",
+    tags:["Wav2Vec2","HuggingFace","音频"], desc:"基于 Wav2Vec2 预训练模型实现英文语音识别，完成音频预处理、模型加载与推理，输出带时间戳的转写结果。" },
+  { type:"项目", title:"基于朴素贝叶斯的文章分类", org:"课程实战", date:"2023.10 - 2023.11",
+    tags:["朴素贝叶斯","NLP","Python"], desc:"实现文本分词、TF 统计与朴素贝叶斯分类器，支持文章自动分类与基于条件概率的文章生成，准确率 90%+。" },
+  { type:"项目", title:"基于 PyTorch 的人脸识别", org:"课程实战", date:"2024.01 - 2024.02",
+    tags:["PyTorch","CNN","图像"], desc:"构建卷积神经网络实现人脸识别，完成数据增强与模型训练调优，在测试集达到 95% 准确率。" },
+];
+
+const edu = [
+  { type:"教育", title:"计算机科学与技术 · 本科", org:"某某大学", date:"2018.09 - 2022.06",
+    tags:["数据结构","操作系统","机器学习"], desc:"GPA 3.6/4.0，专业前 10%；主修数据结构、操作系统、机器学习与深度学习，毕业设计《基于深度学习的文本分类系统》获评优秀。" },
+];
+
+const honors = [
+  { title:"国家励志奖学金", meta:"教育部 · 2021" },
+  { title:"全国大学生数学建模竞赛 省二等奖", meta:"中国工业与应用数学学会 · 2020" },
+  { title:"蓝桥杯程序设计大赛 省一等奖", meta:"工业和信息化部 · 2021" },
+  { title:"校级优秀毕业生", meta:"某某大学 · 2022" },
+  { title:"深度学习工程师（高级）认证", meta:"工信部教育与考试中心 · 2023" },
+  { title:"某 AI 公司 Offer", meta:"大模型方向 · 2024" },
+];
+
+const works = [
+  { title:"LLaMA2 从零训练", desc:"预训练 · SFT · LoRA · DPO 全流程", grad:"linear-gradient(135deg,#6366f1,#8b5cf6)", mark:"L2" },
+  { title:"古诗词生成系统", desc:"Transformer 从零实现 · 3 万首古诗", grad:"linear-gradient(135deg,#0ea5e9,#6366f1)", mark:"诗" },
+  { title:"Agent 智能客服", desc:"ReAct + Function Calling + MCP", grad:"linear-gradient(135deg,#10b981,#0ea5e9)", mark:"A" },
+  { title:"语音识别系统", desc:"Wav2Vec2 英文语音转写", grad:"linear-gradient(135deg,#f59e0b,#f97316)", mark:"音" },
+  { title:"朴素贝叶斯文章分类", desc:"文本分类 + 文章生成 90%+", grad:"linear-gradient(135deg,#ec4899,#f43f5e)", mark:"贝" },
+  { title:"人脸识别系统", desc:"PyTorch CNN 95% 准确率", grad:"linear-gradient(135deg,#64748b,#334155)", mark:"脸" },
+];
+
+/* ============ 渲染 ============ */
+const $ = id => document.getElementById(id);
+$("name").textContent = profile.name;
+$("slogan").textContent = profile.slogan;
+$("quick").innerHTML = profile.quick.map(q => `<span>${q}</span>`).join("");
+$("skills").innerHTML = profile.skills.map(s => `<span style="padding:4px 12px;border-radius:999px;background:#fff;color:#475569;font-size:13px;box-shadow:0 1px 3px rgba(0,0,0,.06)">${s}</span>`).join("");
+
+/* 技能分组 */
+$("skillGroups").innerHTML = skillGroups.map(g =>
+  `<div class="skill-group"><h4>${g.name}</h4><div class="tags">${g.items.map(t=>`<span>${t}</span>`).join("")}</div></div>`).join("");
+
+/* 瀑布流卡片渲染器 */
+function renderMasonry(el, list, badgeOf) {
+  el.innerHTML = list.map((c, i) => {
+    return `<div class="item" style="animation-delay:${i * 80}ms">
+      <article class="card" data-i="${i}" data-list="${badgeOf}" tabindex="0">
+        <div class="card-top"><span class="badge ${c.type}">${c.type}</span><span class="date">${c.date || ""}</span></div>
+        <h3>${c.title}</h3><p class="org">${c.org || ""}</p>
+        <p class="desc">${c.desc || ""}</p>
+        <div class="tags">${(c.tags||[]).map(t=>`<span>${t}</span>`).join("")}</div>
+      </article></div>`;
+  }).join("");
+}
+renderMasonry($("workMasonry"), workExp, "work");
+renderMasonry($("projMasonry"), projects, "proj");
+renderMasonry($("eduMasonry"), edu, "edu");
+
+/* 荣誉 */
+$("honorGrid").innerHTML = honors.map(h =>
+  `<div class="honor"><div class="trophy">🏆</div><div><h4>${h.title}</h4><div class="meta">${h.meta}</div></div></div>`).join("");
+
+/* 作品 */
+$("workGrid").innerHTML = works.map(w =>
+  `<div class="work"><div class="thumb" style="background:${w.grad}">${w.mark}</div><div class="body"><h4>${w.title}</h4><p>${w.desc}</p></div></div>`).join("");
+
+/* 社交 */
+$("socials").innerHTML = profile.socials.map(s =>
+  `<a href="${s.url}" target="_blank" rel="noopener">${icons[s.icon]}<span>${s.label}</span></a>`).join("");
+
+/* ============ 首屏渐入动画 ============ */
+requestAnimationFrame(() => requestAnimationFrame(() => {
+  document.querySelectorAll(".item").forEach(el => el.classList.add("show"));
+}));
+
+/* ============ 点击 Toast ============ */
+const toast = $("toast");
+let timer = null;
+const allLists = { work: workExp, proj: projects, edu };
+function showToast(c) { toast.textContent = `【${c.type}】${c.title}｜${c.date}｜${c.desc}`; toast.classList.add("show"); clearTimeout(timer); timer = setTimeout(()=>toast.classList.remove("show"), 1800); }
+document.querySelectorAll(".card").forEach(card => {
+  const open = () => showToast(allLists[card.dataset.list][+card.dataset.i]);
+  card.addEventListener("click", open);
+  card.addEventListener("keydown", e => { if (e.key==="Enter"||e.key===" "){ e.preventDefault(); open(); } });
+});
+document.querySelectorAll(".work").forEach(w => {
+  w.addEventListener("click", () => showToast(w.querySelector("h4").textContent));
+});
+</script>
+</body>
+</html>
